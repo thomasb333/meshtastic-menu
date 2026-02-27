@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meshtastic Menu Tree</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2C2D3C;
+            color: #FFFFFF;
+            margin: 20px;
+            padding: 20px;
+        }
+        h1 {
+            color: #67EA94;
+            text-align: center;
+        }
+        #platform-select {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #platform-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #3A3B4E;
+            color: #67EA94;
+            border: 1px solid #67EA94;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #67EA94;
+            color: #2C2D3C;
+        }
+        #back-button {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+        #search-bar {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #67EA94;
+            border-radius: 4px;
+            background-color: #3A3B4E;
+            color: #FFFFFF;
+            display: none;
+        }
+        .tree-container {
+            display: none;
+        }
+        details {
+            margin-bottom: 10px;
+        }
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #67EA94;
+            background-color: #3A3B4E;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        li:hover {
+            text-decoration: underline;
+        }
+        .def {
+            display: none;
+            background-color: #3A3B4E;
+            padding: 8px;
+            border: 1px solid #67EA94;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .highlight {
+            background-color: #67EA94;
+            color: #2C2D3C;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Meshtastic Menu Tree</h1>
+    <div id="platform-buttons">
+        <button onclick="showTree('android')">Android</button>
+        <button onclick="showTree('ios')">iOS</button>
+        <button onclick="showTree('web')">Web/PC</button>
+    </div>
+    <input type="text" id="search-bar" placeholder="Search menu items... (e.g., LoRa, MQTT)">
+    <div id="android-tree" class="tree-container">
+        <details>
+            <summary>Meshtastic App Top-Level (Android)</summary>
+            <ul>
+                <li>
+                    <details>
+                        <summary>Connection</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Bluetooth Pairing/Selection<div class="def">Pair and select Bluetooth devices for connection to Meshtastic hardware. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">WiFi/IP Connection<div class="def">Connect to Meshtastic devices via WiFi or Ethernet IP address. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Serial/USB Connection<div class="def">Connect via serial USB for direct hardware access, useful for debugging or CLI. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Messages</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Threaded Conversations<div class="def">View and participate in threaded message conversations across the mesh. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Quick Chat Actions (e.g., thumbs up, location share)<div class="def">Quick actions like reactions (thumbs up) or sharing location in chats. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Map</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Node Locations<div class="def">Display locations of nodes on the map based on shared positions. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Waypoints<div class="def">Create and view waypoints for navigation or points of interest. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Offline Maps Download<div class="def">Download maps for offline use in areas without internet. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Nodes</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Node List (online/offline, SNR, hops)<div class="def">List of nodes with status (online/offline), signal-to-noise ratio (SNR), and hop count. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Remote Admin (via Admin Channel)<div class="def">Administer remote nodes via the Admin channel for configuration changes. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Settings</summary>
+                        <ul>
+                            <li>
+                                <details>
+                                    <summary>App Settings</summary>
+                                    <ul>
+                                        <li onclick="toggleDef(this)">Theme (Light, Dark, System)<div class="def">Choose app theme: Light, Dark, or follow System settings. Default: System</div></li>
+                                        <li onclick="toggleDef(this)">Map Settings (Online/Offline, Tile Sources)<div class="def">Configure map type (online/offline) and tile sources for custom maps. Default: Online</div></li>
+                                        <li onclick="toggleDef(this)">Message Notification Settings<div class="def">Customize notifications for incoming messages. Default: Enable</div></li>
+                                        <li onclick="toggleDef(this)">Debug Logs<div class="def">View and export debug logs for troubleshooting. Default: N/A</div></li>
+                                        <li onclick="toggleDef(this)">Device DB Cache Limit<div class="def">Set limit for device database cache to manage storage. Default: Unlimited</div></li>
+                                        <li onclick="toggleDef(this)">System Settings (Permissions)<div class="def">Manage system permissions like location, Bluetooth, etc. Default: N/A</div></li>
+                                    </ul>
+                                </details>
+                            </li>
+                            <li>
+                                <details>
+                                    <summary>Radio Configuration</summary>
+                                    <ul>
+                                        <li>
+                                            <details>
+                                                <summary>User</summary>
+                                                <ul>
+                                                    <li onclick="toggleDef(this)">Long Name<div class="def">A personalized name for your device. If you are a licensed HAM operator and have enabled IsLicensed, this should be set to your HAM operator call sign. Default: Generated</div></li>
+                                                    <li onclick="toggleDef(this)">Short Name<div class="def">A personalized short identifier for your device. Default: 4 chars</div></li>
+                                                    <li onclick="toggleDef(this)">Team<div class="def">Team color for ATAK integration, to categorize nodes in teams. Default: None</div></li>
+                                                    <li onclick="toggleDef(this)">Is Licensed Operator<div class="def">If you are a licensed HAM operator and have considered the privileges and restrictions of using Meshtastic with a HAM license, enable this flag. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">MAC Address<div class="def">MAC Address of the device, read-only. Default: N/A</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Channels (Up to 8 channels)</summary>
+                                                <ul>
+                                                    <li>
+                                                        <details>
+                                                            <summary>Channel List</summary>
+                                                            <ul>
+                                                                <li>
+                                                                    <details>
+                                                                        <summary>For each channel:</summary>
+                                                                        <ul>
+                                                                            <li onclick="toggleDef(this)">Name<div class="def">A short identifier for the channel. (< 12 bytes). Default: Empty</div></li>
+                                                                            <li onclick="toggleDef(this)">Role<div class="def">Role of the channel: DISABLED, PRIMARY, SECONDARY. Default: PRIMARY for first channel</div></li>
+                                                                            <li onclick="toggleDef(this)">PSK<div class="def">The encryption key used for private channels. Hex byte 0x01 for the Primary default channel. Must be either 0 bytes (no crypto), 16 bytes (AES128), or 32 bytes (AES256). Default: Random</div></li>
+                                                                            <li onclick="toggleDef(this)">Uplink Enabled<div class="def">If enabled, messages from the mesh will be sent to the public internet through any node's configured gateway. Default: Disable</div></li>
+                                                                            <li onclick="toggleDef(this)">Downlink Enabled<div class="def">If enabled, messages captured from a public internet gateway will be forwarded to the local mesh. Default: Disable</div></li>
+                                                                            <li onclick="toggleDef(this)">Modem Preset<div class="def">Inherits from LoRa or custom modem preset. Default: Inherit</div></li>
+                                                                            <li onclick="toggleDef(this)">Module Permissions<div class="def">Bitfield to allow specific modules like Telemetry. Default: All allowed</div></li>
+                                                                        </ul>
+                                                                    </details>
+                                                                </li>
+                                                            </ul>
+                                                        </details>
+                                                    </li>
+                                                    <li onclick="toggleDef(this)">QR Code/Share URL for Channel<div class="def">QR Code or shareable URL for the channel. Default: N/A</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Device</summary>
+                                                <ul>
+                                                    <li onclick="toggleDef(this)">Role<div class="def">Sets the role of the device (e.g., CLIENT, ROUTER, etc.). See the table for descriptions of each role. Default: CLIENT</div></li>
+                                                    <li onclick="toggleDef(this)">Rebroadcast Mode<div class="def">Defines the device's behavior for how messages are rebroadcasted. Default: ALL</div></li>
+                                                    <li onclick="toggleDef(this)">Button GPIO<div class="def">This is the GPIO pin number that will be used for the user button, if your device does not come with a predefined user button. Default: Hardware-specific</div></li>
+                                                    <li onclick="toggleDef(this)">Buzzer GPIO<div class="def">This is the GPIO pin number that will be used for the PWM buzzer, if your device does not come with a predefined buzzer. Default: Hardware-specific</div></li>
+                                                    <li onclick="toggleDef(this)">Buzzer Mode<div class="def">This is the mode for the buzzer. Default: ALL_ENABLED</div></li>
+                                                    <li onclick="toggleDef(this)">Node Info Broadcast Secs<div class="def">This is the number of seconds between NodeInfo message (containing i.a. long and short name) broadcasts from the device. Default: 900</div></li>
+                                                    <li onclick="toggleDef(this)">Double Tap as Button Press<div class="def">This option will enable a double tap, when a supported accelerometer is attached to the device, to be treated as a button press. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">Disable Triple Click<div class="def">Disable triple click (for GPS). Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">TZDEF<div class="def">The tzdef setting allows the local offset to be defined for the device. It uses the TZ Database format to display the correct local time on the device display and in its logs. Default: UTC</div></li>
+                                                    <li onclick="toggleDef(this)">LED Heartbeat Disabled<div class="def">Disable LED heartbeat. Default: Disable</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Position</summary>
+                                                <ul>
+                                                    <li onclick="toggleDef(this)">Position Broadcast Secs<div class="def">If smart broadcast is off we should send our position this often. Default: 900</div></li>
+                                                    <li onclick="toggleDef(this)">Smart Position Enabled<div class="def">Smart broadcast will send out your position at an increased frequency only if your location has changed enough for a position update to be useful. Default: Enable</div></li>
+                                                    <li onclick="toggleDef(this)">Fixed Position<div class="def">If set, this node is at a fixed position. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">GPS Mode<div class="def">Configures whether the GPS functionality is enabled, disabled, or not present on the node. Default: ENABLED if present</div></li>
+                                                    <li onclick="toggleDef(this)">GPS Update Interval<div class="def">How often we should try to get GPS position (in seconds). Default: 30</div></li>
+                                                    <li onclick="toggleDef(this)">Position Flags<div class="def">Defines which options are sent in POSITION messages. Default: ALTITUDE | DOP | HEADING | SPEED</div></li>
+                                                    <li onclick="toggleDef(this)">RX GPIO<div class="def">RX GPIO for GPS. Default: Hardware-specific</div></li>
+                                                    <li onclick="toggleDef(this)">TX GPIO<div class="def">TX GPIO for GPS. Default: Hardware-specific</div></li>
+                                                    <li onclick="toggleDef(this)">Broadcast Smart Min Distance<div class="def">The minimum distance in meters traveled (since the last send) before we can send a position to the mesh if smart broadcast is enabled. Default: 30</div></li>
+                                                    <li onclick="toggleDef(this)">Broadcast Smart Min Interval Secs<div class="def">The minimum number of seconds (since the last send) before we can send a position to the mesh if smart broadcast is enabled. Default: 120</div></li>
+                                                    <li onclick="toggleDef(this)">GPS EN GPIO<div class="def">GPS EN GPIO. Default: Hardware-specific</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Power</summary>
+                                                <ul>
+                                                    <li onclick="toggleDef(this)">Is Power Saving<div class="def">When activated, this feature disables Bluetooth, Serial, WiFi, and the device's screen to conserve power. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">On Battery Shutdown After Secs<div class="def">Automatically shut down a device after a defined time period if power is lost. Default: 0</div></li>
+                                                    <li onclick="toggleDef(this)">ADC Multiplier Override<div class="def">Ratio of voltage divider for battery pin e.g. 3.20. Default: Hardware-specific</div></li>
+                                                    <li onclick="toggleDef(this)">Wait Bluetooth Secs<div class="def">How long to wait before turning off BLE in no Bluetooth states. Default: 60</div></li>
+                                                    <li onclick="toggleDef(this)">SDS Secs<div class="def">Super deep sleep interval. Default: 0</div></li>
+                                                    <li onclick="toggleDef(this)">LS Secs<div class="def">Light sleep interval. Default: 300</div></li>
+                                                    <li onclick="toggleDef(this)">Min Wake Secs<div class="def">Minimum time till sleep. Default: 10</div></li>
+                                                    <li onclick="toggleDef(this)">Device Battery INA Address<div class="def">If an INA-2XX device is auto-detected on one of the I2C buses at the specified address, it will be used as the authoritative source for reading device battery level voltage. Default: 0x40</div></li>
+                                                    <li onclick="toggleDef(this)">Powermon Enables<div class="def">Power monitoring enables. Default: 0</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Network</summary>
+                                                <ul>
+                                                    <li onclick="toggleDef(this)">WiFi Enabled<div class="def">Enables WiFi on the device. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">WiFi SSID<div class="def">SSID for the WiFi network. Default: Empty</div></li>
+                                                    <li onclick="toggleDef(this)">WiFi PSK<div class="def">PSK for the WiFi network. Default: Empty</div></li>
+                                                    <li onclick="toggleDef(this)">NTP Server<div class="def">NTP server to use for time synchronization. Default: meshtastic.pool.ntp.org</div></li>
+                                                    <li onclick="toggleDef(this)">ETH Enabled<div class="def">Enables Ethernet if supported. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">Address Mode<div class="def">DHCP or STATIC. Default: DHCP</div></li>
+                                                    <li onclick="toggleDef(this)">IPv4 Config<div class="def">Sub: IP, Gateway, Subnet, DNS. Default: DHCP</div></li>
+                                                    <li onclick="toggleDef(this)">Rsyslog Server<div class="def">Rsyslog server. Default: Empty</div></li>
+                                                    <li onclick="toggleDef(this)">Enabled Protocols<div class="def">Bitfield, e.g., UDP_BROADCAST. Default: 0</div></li>
+                                                    <li onclick="toggleDef(this)">IPv6 Enabled<div class="def">Enable IPv6. Default: Disable</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Display</summary>
+                                                <ul>
+                                                    <li onclick="toggleDef(this)">Screen On Secs<div class="def">How long the screen should remain on after user interaction. Default: 60</div></li>
+                                                    <li onclick="toggleDef(this)">Auto Screen Carousel Secs<div class="def">Interval for automatic screen carousel. Default: 5</div></li>
+                                                    <li onclick="toggleDef(this)">Flip Screen<div class="def">Flip screen 180 degrees. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">Units<div class="def">METRIC or IMPERIAL. Default: METRIC</div></li>
+                                                    <li onclick="toggleDef(this)">OLED Type<div class="def">AUTO, SSD1306, SH1106, etc. Default: AUTO</div></li>
+                                                    <li onclick="toggleDef(this)">Display Mode<div class="def">DEFAULT, TWOCOLOR, INVERTED, COLOR. Default: DEFAULT</div></li>
+                                                    <li onclick="toggleDef(this)">Heading Bold<div class="def">Make heading bold. Default: Enable</div></li>
+                                                    <li onclick="toggleDef(this)">Wake On Tap Or Motion<div class="def">Wake on tap or motion. Default: Enable</div></li>
+                                                    <li onclick="toggleDef(this)">Compass Orientation<div class="def">DEGREES_0, etc. Default: DEGREES_0</div></li>
+                                                    <li onclick="toggleDef(this)">Use 12h Clock<div class="def">Use 12h clock. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">Use Long Node Name<div class="def">Use long node name. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">Enable Message Bubbles<div class="def">Enable message bubbles. Default: Enable</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>LoRa</summary>
+                                                <ul>
+                                                    <li onclick="toggleDef(this)">Use Preset<div class="def">Use preset modem settings. Default: Enable</div></li>
+                                                    <li onclick="toggleDef(this)">Modem Preset<div class="def">LONG_FAST, LONG_MODERATE, etc. Default: LONG_FAST</div></li>
+                                                    <li onclick="toggleDef(this)">Region<div class="def">UNSET, US, EU_433, etc. Default: UNSET</div></li>
+                                                    <li onclick="toggleDef(this)">Bandwidth<div class="def">Bandwidth. Default: Preset-dependent</div></li>
+                                                    <li onclick="toggleDef(this)">Spread Factor<div class="def">Spread Factor 7-12. Default: Preset-dependent</div></li>
+                                                    <li onclick="toggleDef(this)">Coding Rate<div class="def">Coding Rate 5-8. Default: Preset-dependent</div></li>
+                                                    <li onclick="toggleDef(this)">Frequency Offset<div class="def">Frequency offset. Default: 0</div></li>
+                                                    <li onclick="toggleDef(this)">Hop Limit<div class="def">Hop limit. Default: 3</div></li>
+                                                    <li onclick="toggleDef(this)">TX Enabled<div class="def">TX enabled. Default: Enable</div></li>
+                                                    <li onclick="toggleDef(this)">TX Power<div class="def">TX power. Default: Max legal</div></li>
+                                                    <li onclick="toggleDef(this)">Channel Num<div class="def">Channel num. Default: 0</div></li>
+                                                    <li onclick="toggleDef(this)">Override Duty Cycle<div class="def">Override duty cycle. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">SX126X RX Boosted Gain<div class="def">SX126X RX boosted gain. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">Ignore Incoming<div class="def">Ignore incoming. Default: Empty</div></li>
+                                                    <li onclick="toggleDef(this)">Override Frequency<div class="def">Override frequency. Default: 0</div></li>
+                                                    <li onclick="toggleDef(this)">Ignore MQTT<div class="def">Ignore MQTT. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">PA Fan Disabled<div class="def">PA fan disabled. Default: Disable</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Bluetooth</summary>
+                                                <ul>
+                                                    <li onclick="toggleDef(this)">Enabled<div class="def">Enabled. Default: Enable</div></li>
+                                                    <li onclick="toggleDef(this)">Mode<div class="def">RANDOM_PIN, FIXED_PIN, NO_PIN. Default: RANDOM_PIN</div></li>
+                                                    <li onclick="toggleDef(this)">Fixed Pin<div class="def">Fixed pin. Default: 123456</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Security</summary>
+                                                <ul>
+                                                    <li onclick="toggleDef(this)">Serial Enabled<div class="def">Serial enabled. Default: Enable</div></li>
+                                                    <li onclick="toggleDef(this)">Debug Log Enabled<div class="def">Debug log enabled. Default: Disable</div></li>
+                                                    <li onclick="toggleDef(this)">Public Key<div class="def">Public key. Default: Generated</div></li>
+                                                    <li onclick="toggleDef(this)">Private Key<div class="def">Private key. Default: Generated</div></li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Module Settings</summary>
+                                                <ul>
+                                                    <!-- Repeat module sections as in the Android tree above, with defaults -->
+                                                </ul>
+                                            </details>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Debug</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Logs<div class="def">View system logs for troubleshooting. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Factory Reset<div class="def">Reset device to factory settings. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Share Debug Info<div class="def">Share debug information for support. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+            </ul>
+        </details>
+    </div>
+    <div id="ios-tree" class="tree-container">
+        <!-- iOS tree is similar to Android, but without Message Notification Settings and with TAK Server in App Settings -->
+        <details>
+            <summary>Meshtastic App Top-Level (iOS)</summary>
+            <ul>
+                <li>
+                    <details>
+                        <summary>Connection</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Bluetooth Pairing/Selection<div class="def">Pair and select Bluetooth devices for connection to Meshtastic hardware. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">WiFi/IP Connection<div class="def">Connect to Meshtastic devices via WiFi or Ethernet IP address. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Serial/USB Connection<div class="def">Connect via serial USB for direct hardware access, useful for debugging or CLI. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Messages</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Threaded Conversations<div class="def">View and participate in threaded message conversations across the mesh. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Quick Chat Actions (e.g., thumbs up, location share)<div class="def">Quick actions like reactions (thumbs up) or sharing location in chats. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Map</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Node Locations<div class="def">Display locations of nodes on the map based on shared positions. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Waypoints<div class="def">Create and view waypoints for navigation or points of interest. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Offline Maps Download<div class="def">Download maps for offline use in areas without internet. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Nodes</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Node List (online/offline, SNR, hops)<div class="def">List of nodes with status (online/offline), signal-to-noise ratio (SNR), and hop count. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Remote Admin (via Admin Channel)<div class="def">Administer remote nodes via the Admin channel for configuration changes. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Settings</summary>
+                        <ul>
+                            <li>
+                                <details>
+                                    <summary>App Settings</summary>
+                                    <ul>
+                                        <li onclick="toggleDef(this)">Theme (Light, Dark, System)<div class="def">Choose app theme: Light, Dark, or follow System settings. Default: System</div></li>
+                                        <li onclick="toggleDef(this)">Map Settings (Online/Offline, Tile Sources)<div class="def">Configure map type (online/offline) and tile sources for custom maps. Default: Online</div></li>
+                                        <li onclick="toggleDef(this)">Debug Logs<div class="def">View and export debug logs for troubleshooting. Default: N/A</div></li>
+                                        <li onclick="toggleDef(this)">Device DB Cache Limit<div class="def">Set limit for device database cache to manage storage. Default: Unlimited</div></li>
+                                        <li onclick="toggleDef(this)">System Settings (Permissions)<div class="def">Manage system permissions like location, Bluetooth, etc. Default: N/A</div></li>
+                                        <li onclick="toggleDef(this)">TAK Server<div class="def">Start TAK server for iTAK integration on iOS. Default: Disable</div></li>
+                                    </ul>
+                                </details>
+                            </li>
+                            <li>
+                                <details>
+                                    <summary>Radio Configuration</summary>
+                                    <ul>
+                                        <!-- Repeat the same as Android Radio Configuration, as core radio settings are platform-agnostic -->
+                                    </ul>
+                                </details>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Debug</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Logs<div class="def">View system logs for troubleshooting. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Factory Reset<div class="def">Reset device to factory settings. Default: N/A</div></li>
+                            <li onclick="toggleDef(this)">Share Debug Info<div class="def">Share debug information for support. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+            </ul>
+        </details>
+    </div>
+    <div id="web-tree" class="tree-container">
+        <details>
+            <summary>Meshtastic Web Flasher (PC)</summary>
+            <ul>
+                <li onclick="toggleDef(this)">Select Device<div class="def">Choose the hardware device to flash (e.g., Heltec V3). Default: N/A</div></li>
+                <li onclick="toggleDef(this)">Software Version<div class="def">Select firmware version to flash (stable or beta). Default: Latest stable</div></li>
+                <li onclick="toggleDef(this)">Flash Firmware<div class="def">Flash the selected firmware to the device. Default: N/A</div></li>
+                <li>
+                    <details>
+                        <summary>Initial Configuration</summary>
+                        <ul>
+                            <li onclick="toggleDef(this)">Region<div class="def">Set LoRa region for frequency compliance. Default: UNSET</div></li>
+                            <li onclick="toggleDef(this)">Modem Preset<div class="def">Choose LoRa preset for range/speed. Default: LONG_FAST</div></li>
+                            <li onclick="toggleDef(this)">User Name<div class="def">Set long and short names. Default: Generated</div></li>
+                            <li onclick="toggleDef(this)">Channels<div class="def">Configure primary and secondary channels. Default: Public</div></li>
+                            <li onclick="toggleDef(this)">Advanced Options<div class="def">Access full radio config via connected web client after flashing. Default: N/A</div></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary>Radio Configuration (Post-Flash Web Client)</summary>
+                        <ul>
+                            <!-- Similar to Android/iOS radio config sections, as web client mirrors them -->
+                        </ul>
+                    </details>
+                </li>
+            </ul>
+        </details>
+    </div>
+    <div id="back-button">
+        <button onclick="goBack()">Back to Platform Selection</button>
+    </div>
+
+    <script>
+        let currentTree = null;
+
+        function showTree(platform) {
+            if (currentTree) {
+                currentTree.style.display = 'none';
+            }
+            document.getElementById('search-bar').style.display = 'block';
+            document.getElementById('back-button').style.display = 'block';
+            const tree = document.getElementById(platform + '-tree');
+            tree.style.display = 'block';
+            currentTree = tree;
+        }
+
+        function goBack() {
+            if (currentTree) {
+                currentTree.style.display = 'none';
+            }
+            currentTree = null;
+            document.getElementById('search-bar').style.display = 'none';
+            document.getElementById('back-button').style.display = 'none';
+            document.getElementById('platform-select').style.display = 'block';
+            resetTree(document.getElementById('android-tree'));
+            resetTree(document.getElementById('ios-tree'));
+            resetTree(document.getElementById('web-tree'));
+            document.getElementById('search-bar').value = '';
+        }
+
+        document.getElementById('search-bar').addEventListener('input', function() {
+            if (!currentTree) return;
+            const query = this.value.toLowerCase().trim();
+            if (!query) {
+                resetTree(currentTree);
+                return;
+            }
+            filterTree(currentTree, query);
+        });
+
+        function toggleDef(el) {
+            const def = el.querySelector('.def');
+            if (def) {
+                def.style.display = def.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        function resetTree(tree) {
+            tree.querySelectorAll('.highlight').forEach(el => {
+                el.outerHTML = el.innerHTML;
+            });
+            tree.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
+            tree.querySelectorAll('details').forEach(d => d.open = false);
+            tree.querySelectorAll('.def').forEach(d => d.style.display = 'none');
+        }
+
+        function filterTree(tree, query) {
+            resetTree(tree);
+
+            const walker = document.createTreeWalker(tree, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            while (node = walker.nextNode()) {
+                const parent = node.parentElement;
+                if (parent.tagName === 'SUMMARY' || parent.tagName === 'LI') {
+                    const text = node.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        const regex = new RegExp(query, 'gi');
+                        parent.innerHTML = parent.innerHTML.replace(regex, match => `<span class="highlight">${match}</span>`);
+                        showParents(parent);
+                    }
+                }
+            }
+
+            tree.querySelectorAll('details').forEach(detail => {
+                if (!detail.querySelector('.highlight') && detail.parentElement.classList.contains('tree-container')) {
+                    detail.classList.add('hidden');
+                } else {
+                    detail.open = true;
+                }
+            });
+        }
+
+        function showParents(element) {
+            while (element && !element.classList.contains('tree-container')) {
+                if (element.classList.contains('hidden')) {
+                    element.classList.remove('hidden');
+                }
+                if (element.tagName === 'DETAILS') {
+                    element.open = true;
+                }
+                element = element.parentElement;
+            }
+        }
+    </script>
+</body>
+</html>
